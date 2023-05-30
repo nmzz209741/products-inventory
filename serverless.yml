@@ -1,0 +1,175 @@
+service: productsinventory
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: ap-south-1
+  environment:
+    tableName: ${self:custom.tableName}
+    bucketName: ${self:custom.appBucketName}
+    imageUploadBucket: ${self:custom.imageUploadBucket}
+    region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+        - s3:*
+      Resource: '*'
+  apiGateway:
+    apiKeys:
+      - apiAccessKey
+    usagePlan:
+      quota:
+        limit: 1000
+        period: MONTH
+      throttle:
+        rateLimit: 5
+        burstLimit: 20
+
+plugins:
+  - serverless-webpack
+  - serverless-s3-sync
+
+package:
+  individually: true
+
+custom:
+  tableName: products
+  appBucketName: plerion-project-inventory-bucket
+  imageUploadBucket: plerion-project-inventory-image-bucket
+  s3Sync:
+    - bucketName: ${self:custom.appBucketName}
+      localDir: product-inventory-frontend/build/
+
+functions:
+  getProduct:
+    handler: lambdas/endpoints/products/getProduct.handler
+    events:
+      - http:
+          path: products/{ID}
+          method: GET
+          cors: true
+          private: true
+  getProducts:
+    handler: lambdas/endpoints/products/getProducts.handler
+    events:
+      - http:
+          path: products
+          method: GET
+          cors: true
+          private: true
+  createProduct:
+    handler: lambdas/endpoints/products/createProduct.handler
+    events:
+      - http:
+          path: products
+          method: POST
+          cors: true
+          private: true
+  deleteProduct:
+    handler: lambdas/endpoints/products/deleteProduct.handler
+    events:
+      - http:
+          path: products/{ID}
+          method: DELETE
+          cors: true
+          private: true
+  uploadImage:
+    handler: lambdas/endpoints/images/uploadImage.handler
+    events:
+      - http:
+          path: products/upload-image
+          method: POST
+          cors: true
+          private: true
+resources:
+  Resources:
+    FrontEndAppBucket:
+        Type: AWS::S3::Bucket
+        Properties:
+            BucketName: ${self:custom.appBucketName}
+            PublicAccessBlockConfiguration:
+              BlockPublicAcls: false
+            OwnershipControls:
+              Rules:
+                - ObjectOwnership: ObjectWriter
+            WebsiteConfiguration:
+                IndexDocument: index.html
+                ErrorDocument: index.html
+
+    ImageUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.imageUploadBucket}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
+  
+    S3AccessPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref FrontEndAppBucket
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: '*'
+              Action: s3:GetObject
+              Resource: !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref FrontEndAppBucket
+                  - '/*'
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: ${self:custom.appBucketName}.s3.amazonaws.com
+              Id: ReactApp
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
+          Enabled: 'true'
+          DefaultRootObject: index.html
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - PUT
+              - POST
+            TargetOriginId: ReactApp
+            ForwardedValues:
+              QueryString: 'false'
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
+    
+    ProductsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
