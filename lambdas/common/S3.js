@@ -19,14 +19,13 @@ const S3 = {
     }
     return data;
   },
-  
+
   async write(data, fileName, bucket, contentType) {
     const params = {
       Bucket: bucket,
       Body: data,
       Key: fileName,
       ContentType: contentType,
-      ACL: 'public-read',
     };
 
     const newData = await S3Client.putObject(params).promise();

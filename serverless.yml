@@ -9,7 +9,7 @@ provider:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.appBucketName}
     imageUploadBucket: ${self:custom.imageUploadBucket}
-    region: us-east-1
+    region: ap-south-1
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -40,7 +40,7 @@ custom:
   imageUploadBucket: plerion-project-inventory-image-bucket
   s3Sync:
     - bucketName: ${self:custom.appBucketName}
-      localDir: product-inventory-frontend/build/
+      localDir: inventory-frontend/build/
 
 functions:
   getProduct:
@@ -123,6 +123,23 @@ resources:
                 - ''
                 - - 'arn:aws:s3:::'
                   - !Ref FrontEndAppBucket
+                  - '/*'
+
+    ImageBucketS3AccessPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref ImageUploadBucket
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: '*'
+              Action: s3:GetObject
+              Resource: !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref ImageUploadBucket
                   - '/*'
 
     CloudFrontDistribution:

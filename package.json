@@ -3,7 +3,12 @@
     "serverless-s3-sync": "^3.1.0"
   },
   "dependencies": {
+    "bootstrap": "^5.2.3",
     "file-type": "^18.4.0",
+    "lodash": "^4.17.21",
+    "node-sass": "^9.0.0",
+    "react-bootstrap": "^2.7.4",
+    "react-router-dom": "^6.11.2",
     "serverless-webpack": "^5.11.0",
     "uuid": "^9.0.0",
     "webpack": "^5.84.1"
