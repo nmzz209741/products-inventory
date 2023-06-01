@@ -32,7 +32,7 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
       {error && <Typography color="error">{error}</Typography>}
       <Box display="flex" flexDirection="column" gap={2}>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <TextField
               required
               label="Name"
@@ -44,7 +44,7 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               required
               type="number"
@@ -71,7 +71,7 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
           fullWidth
         />
         <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={9}>
+        <Grid item xs={8}>
             {isUrlInput ? (
               <TextField
                 required
@@ -94,7 +94,7 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
             />
             )}
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <FormControlLabel
               control={<Switch color="default" checked={isUrlInput} onChange={handleSwitchChange} />}
               label="Use URL for image"

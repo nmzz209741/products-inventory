@@ -154,7 +154,7 @@ resources:
                 HTTPSPort: 443
                 OriginProtocolPolicy: https-only
           Enabled: 'true'
-          DefaultRootObject: index.html
+          DefaultRootObject: ''
           CustomErrorResponses:
             - ErrorCode: 404
               ResponseCode: 200

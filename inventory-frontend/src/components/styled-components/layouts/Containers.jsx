@@ -1,13 +1,18 @@
 import { styled } from '@mui/system';
 import { Grid } from '@mui/material';
-export const RootContainer = styled('main')({
+export const RootContainer = styled('main')(({ theme }) => ({
   width: '50%',
   margin: '0 auto',
   padding: '16px',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center'
-});
+  alignItems: 'center',
+
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    padding: '8px',
+  },
+}));
 
 export const EmptyContainer = styled('div')({
   display: 'flex',

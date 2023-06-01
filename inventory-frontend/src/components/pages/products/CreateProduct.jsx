@@ -89,27 +89,35 @@ function CreateProduct() {
       return;
     }
 
-    if (!formData.isUrlInput) {
-      try {
-        const uploadedImageUrl = await uploadImageFn(formData.imageFile);
-        setFormData((prevData) => ({
-          ...prevData,
-          imageUrl: uploadedImageUrl
-        }));
-      } catch (err) {
-        console.error(err);
-        setError('Failed to upload image.');
-        setLoading(false);
-        return;
-      }
-    }
-
-    const product = {
+    let product = {
       imageUrl: formData.imageUrl,
       description: formData.description,
       price: formData.price,
       name: formData.name
     };
+
+    if (!formData.isUrlInput) {
+      try {
+        const uploadedImageUrl = await uploadImageFn(formData.imageFile);
+        const updatedFormData = {
+          ...formData,
+          imageUrl: uploadedImageUrl
+        };
+        setFormData(updatedFormData);
+
+        product = {
+          imageUrl: updatedFormData.imageUrl,
+          description: updatedFormData.description,
+          price: updatedFormData.price,
+          name: updatedFormData.name
+        };
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+        return;
+      }
+    }
+
 
     try {
       await createProductFn(product);
@@ -134,28 +142,30 @@ function CreateProduct() {
           <CircularProgress />
         </EmptyContainer>
       ) : (
-        <Card sx={{ width: '75%' }}>
-          <CardContent>
-            {success && (
-              <Alert severity="success" onClose={() => setSuccess(false)}>
-                Product created successfully! Redirecting ...
-              </Alert>
-            )}
-            {error && (
-              <Alert severity="error" onClose={() => setError('')}>
-                {error}
-              </Alert>
-            )}
-            <ProductsListHeader headingText="Create Product" />
-            <CreateProductForm
-              handleSubmit={handleSubmit}
-              loading={loading}
-              error={error}
-              formData={formData}
-              setFormData={setFormData}
-            />
-          </CardContent>
-        </Card>
+        <>
+          <ProductsListHeader headingText="Create Product" />
+          <Card sx={{ width: '75%' }}>
+            <CardContent>
+              {success && (
+                <Alert severity="success" onClose={() => setSuccess(false)}>
+                  Product created successfully! Redirecting ...
+                </Alert>
+              )}
+              {error && (
+                <Alert severity="error" onClose={() => setError('')}>
+                  {error}
+                </Alert>
+              )}
+              <CreateProductForm
+                handleSubmit={handleSubmit}
+                loading={loading}
+                error={error}
+                formData={formData}
+                setFormData={setFormData}
+              />
+            </CardContent>
+          </Card>
+        </>
       )}
     </RootContainer>
   );

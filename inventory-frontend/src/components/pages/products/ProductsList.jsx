@@ -47,7 +47,6 @@ export default function ProductsList() {
   const getProducts = async () => {
     try {
       const response = await getProductsFn();
-      console.log(response);
       setProducts(response.products);
     } catch (error) {
       console.error('Error fetching products:', error);
