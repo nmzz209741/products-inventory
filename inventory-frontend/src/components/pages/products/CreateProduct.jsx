@@ -1,3 +1,6 @@
+/**
+ * @module CreateProduct
+ */
 import React, { useState } from 'react';
 import { CircularProgress, Toolbar, Card, CardContent, Alert } from '@mui/material';
 import { createProductFn, uploadImageFn } from '../../../api/products';
@@ -9,7 +12,7 @@ import { useHistory } from 'react-router-dom';
 const initialFormState = {
   name: '',
   description: '',
-  price: 0,
+  price: '',
   imageUrl: '',
   imageFile: null,
   isUrlInput: true,
@@ -22,6 +25,12 @@ const initialFormState = {
   }
 };
 
+/**
+ * CreateProduct is a functional component that provides a form for creating a new product.
+ *
+ * @function CreateProduct
+ * @returns {JSX.Element} The rendered CreateProduct form component
+ */
 function CreateProduct() {
   const [formData, setFormData] = useState(initialFormState);
   const [loading, setLoading] = useState(false);
@@ -29,13 +38,23 @@ function CreateProduct() {
   const [success, setSuccess] = useState(false);
   const history = useHistory();
 
+  /**
+   * Resets the form to its initial state.
+   * @function resetForm
+   */
   const resetForm = () => {
     setFormData(initialFormState);
   };
 
+  /**
+ * Validates the form input values.
+ * @function validateForm
+ * @returns {boolean} A boolean indicating whether the form data is valid or not.
+ */
   const validateForm = () => {
     let valid = true;
     let errors = { ...initialFormState.formErrors };
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     if (!formData.name.trim()) {
       valid = false;
@@ -47,9 +66,9 @@ function CreateProduct() {
       errors.description = "Product description is required";
     }
 
-    if (!formData.price || formData.price <= 0) {
+    if (!formData.price || formData.price <= 0 || !/^\d+(\.\d+)?$/.test(formData.price.toString())) {
       valid = false;
-      errors.price = "Product price is required and must be greater than zero";
+      errors.price = "Product price is required, must be a non-negative integer, and greater than zero";
     }
 
     if (formData.isUrlInput) {
@@ -68,6 +87,17 @@ function CreateProduct() {
       if (!formData.imageFile) {
         valid = false;
         errors.imageFile = "Image file is required";
+      } else {
+        if (formData.imageFile.size > 5242880) {
+          valid = false;
+          errors.imageFile = "Image file is too large. Please upload a file less than 5MB in size."
+        }
+
+        // Check if the MIME type of the file is allowed
+        if (!allowedMimes.includes(formData.imageFile.type)) {
+          valid = false;
+          errors.imageFile = "Unsupported file type. Please upload a JPEG or PNG image."
+        }
       }
     }
 
@@ -79,6 +109,12 @@ function CreateProduct() {
     return valid;
   };
 
+  /**
+ * Handles the form submission event.
+ * @function handleSubmit
+ * @param {object} e - Event object.
+ * @returns {Promise<void>}
+ */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -114,6 +150,7 @@ function CreateProduct() {
       } catch (err) {
         console.error(err);
         setLoading(false);
+        setError('Failed to create product.');
         return;
       }
     }
@@ -128,7 +165,7 @@ function CreateProduct() {
       }, 2000);
     } catch (err) {
       console.error(err);
-      setError('Failed to create product.');
+      setError(`Failed to create product. ${err.message}`);
     }
 
     setLoading(false);

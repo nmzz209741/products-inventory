@@ -1,3 +1,6 @@
+/**
+ * @module ProductsList
+ */
 import React, { useState, useEffect } from 'react';
 import { Toolbar, Grid, CircularProgress, Alert } from '@mui/material';
 import ProductCard from '../../views/products/ProductCard';
@@ -12,6 +15,12 @@ import emptyInventory from '../../../assets/images/emptyInventory.png';
 import errorIcon from '../../../assets/images/errorIcon.png';
 import { ProductsListHeader } from '../../views/products/ProductListHeader';
 
+/**
+ * `ProductsList` is a functional component that renders a list of product cards.
+ *
+ * @function ProductsList
+ * @returns {JSX.Element} The rendered ProductsList component
+ */
 export default function ProductsList() {
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -20,15 +29,30 @@ export default function ProductsList() {
   const [error, setError] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
 
+  /**
+ * Opens a product dialog.
+ * @function handleOpen
+ * @param {object} product - The product to display in the dialog.
+ */
   const handleOpen = (product) => {
     setSelectedProduct(product);
     setOpen(true);
   };
 
+  /**
+   * Closes the product dialog.
+   * @function handleClose
+   */
   const handleClose = () => {
     setOpen(false);
   };
 
+  /**
+ * Deletes a product from the product list.
+ * @function handleDelete
+ * @param {string} productId - The ID of the product to delete.
+ * @returns {Promise<void>}
+ */
   const handleDelete = async (productId) => {
     try {
       await deleteProductFn(productId);
@@ -44,6 +68,12 @@ export default function ProductsList() {
     getProducts();
   }, []);
 
+  /**
+ * Fetches a list of products and updates the component's state.
+ * @function getProducts
+ * @returns {Promise<void>}
+ */
+
   const getProducts = async () => {
     try {
       const response = await getProductsFn();
@@ -56,6 +86,7 @@ export default function ProductsList() {
     }
   };
 
+  // Layout components for various loading/error states
   const loadingContainer = (
     <EmptyContainer>
       <CircularProgress />
@@ -78,7 +109,7 @@ export default function ProductsList() {
 
   const productsGrid = (
     <>
-      <ProductsListHeader headingText={'Inventory Products'}/>
+      <ProductsListHeader headingText={'Inventory Products'} />
       <Grid container spacing={2}>
         {products.map((product) => (
           <ProductCard key={product.ID} product={product} handleOpen={handleOpen} handleDelete={handleDelete} />

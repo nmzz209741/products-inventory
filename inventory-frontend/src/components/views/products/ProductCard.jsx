@@ -1,9 +1,28 @@
+/**
+ * @module ProductCard
+ */
+
 import React from 'react';
 import { Grid, Card, CardMedia, CardContent, Chip } from '@mui/material';
 import StyledTypography from '../../styled-components/ui/Texts';
 import { ViewMoreButton, DeleteButton } from '../../styled-components/ui/Buttons';
 import { ButtonsContainer, CardTitleContainer } from '../../styled-components/layouts/Containers';
 
+/**
+ * `ProductCard` is a functional component that renders a product card.
+ *
+ * @function ProductCard
+ * @param {object} props - The props object
+ * @param {object} props.product - The product object
+ * @param {string} props.product.ID - The product ID
+ * @param {string} props.product.imageUrl - The product image URL
+ * @param {string} props.product.name - The product name
+ * @param {number} props.product.price - The product price
+ * @param {string} props.product.description - The product description
+ * @param {function} props.handleOpen - The function to be called when the 'View More' button is clicked
+ * @param {function} props.handleDelete - The function to be called when the 'Delete' button is clicked
+ * @returns {JSX.Element} The rendered ProductCard component
+ */
 export const ProductCard = ({ product, handleOpen, handleDelete }) => {
   const handleDeleteClick = () => {
     handleDelete(product.ID);
@@ -25,10 +44,10 @@ export const ProductCard = ({ product, handleOpen, handleDelete }) => {
 
           <div
             style={{
-              display: '-webkit-box',
-              '-webkit-line-clamp': 3,
-              '-webkit-box-orient': 'vertical',
-              overflow: 'clip',
+              display: 'webkitBox',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
               textOverflow: 'ellipsis',
               maxHeight: '4em',
               minHeight: '4em'

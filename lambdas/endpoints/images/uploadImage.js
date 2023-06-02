@@ -5,9 +5,10 @@
 import Responses from '../../common/API_Responses';
 import * as fileType from 'file-type';
 import { v4 as uuid } from 'uuid';
-import S3 from '../../common/S3'
+import S3 from '../../common/S3';
 
 const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/jpg'];
+const MAXIMUM_SIZE = 5242880;
 
 /**
  * Handles the POST request to upload an image to an S3 bucket.
@@ -23,6 +24,12 @@ exports.handler = async (event) => {
     if (!body || !body.image || !body.mime) {
       return Responses._400({
         message: 'Incorrect body on request for image upload',
+      });
+    }
+
+    if (body.image && body.image.size > MAXIMUM_SIZE) {
+      return Responses._413({
+        message: 'File size exceeds the maximum limit',
       });
     }
 
@@ -58,6 +65,6 @@ exports.handler = async (event) => {
     });
   } catch (error) {
     console.error('error', error);
-    return Responses._500({message: 'Image upload failure'});
+    return Responses._500({ message: 'Image upload failure' });
   }
 };

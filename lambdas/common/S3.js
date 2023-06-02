@@ -29,7 +29,7 @@ const S3 = {
       return data.Body;
     } catch (err) {
       console.error(`Error fetching file ${fileName} from ${bucket}`, err);
-      throw Error(`Failed to get file ${fileName} from ${bucket}`);
+      throw Error(`Failed to get file ${fileName} from ${bucket}: ${err.message}`);
     }
   },
 
@@ -57,7 +57,7 @@ const S3 = {
       return newData;
     } catch (err) {
       console.error(`Error writing file ${fileName} to ${bucket}`, err);
-      throw Error(`There was an error writing file in the S3 bucket`);
+      throw Error(`There was an error writing file in the S3 bucket: ${err.message}`);
     }
   },
 
@@ -83,7 +83,7 @@ const S3 = {
       return deletedData;
     } catch (err) {
       console.error(`Error deleting object ${url}`, err);
-      throw Error(`There was an error deleting the object from the S3 bucket`);
+      throw Error(`There was an error deleting the object from the S3 bucket: ${err.message}`);
     }
   }
 };

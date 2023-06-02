@@ -1,9 +1,20 @@
+/**
+ * @module Header
+ */
+
 import { Drawer, Button, IconButton, Box, Typography, Divider, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import React, { useState } from 'react';
 
 import { StyledLogoLink, StyledAppBar, StyledDrawerPaper, StyledNavItemLink, StyledToolbar } from '../styled-components/ui/Navbar';
 
+/**
+ * `Header` is a functional component that renders a navigation bar.
+ * It includes a mobile drawer for smaller screens. The navigation links are defined in the `routes` array.
+ * 
+ * @function Header
+ * @returns {JSX.Element} The rendered Header component.
+ */
 const Header = () => {
   const drawerWidth = 240;
   const routes = [

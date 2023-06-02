@@ -34,21 +34,18 @@ exports.handler = async (event) => {
   let ID = event.pathParameters.ID;
 
   try {
-    // Delete the record from DynamoDB
     const product = await Dynamo.get(ID, tableName);
     // Delete the S3 image if it contains image uploaded
     if (product.imageUrl.includes(process.env.imageUploadBucket)) {
       await S3.delete(product.imageUrl);
     }
+    // Delete the record from DynamoDB
     await Dynamo.delete(ID, tableName);
     return Responses._200({
       message: `Item with ID:${ID} deleted successfully`,
     });
   } catch (error) {
     console.error(`Error deleting the item with ID:${ID}: ${error}`);
-    if (err.message === 'Data reference error') {
-      return Responses._400({ message: 'ID not found in the database' });
-    }
     return Responses._500({
       message: `Internal Server Error deleting the item`,
     });

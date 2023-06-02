@@ -54,6 +54,16 @@ const API_Responses = {
   _500(data) {
     return baseResponse(data, 500);
   },
+
+  /**
+   * Creates a HTTP 500 (Internal Server Error) response.
+   *
+   * @param {Object} [data={}] - The data to be sent in the response body.
+   * @returns {Object} The HTTP response object.
+   */
+  _413(data) {
+    return baseResponse(data, 500);
+  },
 };
 
 module.exports = API_Responses;

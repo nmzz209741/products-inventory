@@ -13,7 +13,11 @@ export const EmptyText = styled(Typography)({
 
 export const StyledTypography = styled(Typography)(({ theme }) => ({
   color: '#555',
-   display: '-webkit-box', '-webkit-line-clamp': 3, '-webkit-box-orient': 'vertical', overflow: 'ellipsis',
+  display: 'webkitBox',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }));
 
 export default StyledTypography;

@@ -26,7 +26,7 @@ const Dynamo = {
 
       const data = await documentClient.get(params).promise();
 
-      if (!data || !data.Item) {
+      if (!data?.Item) {
         throw Error('Data reference error');
       }
 
@@ -121,10 +121,19 @@ const Dynamo = {
    * @param {string} ID - The ID of the item.
    * @param {string} TableName - The name of the table.
    * @throws {Error} - Throws an error if unable to delete the item.
-   * @returns {Promise<boolean>} - Returns true when the deletion is successful.
+   * @returns {Promise<boolean|string>} - Returns true when the deletion is successful or a string when the item doesn't exist.
    */
   async delete(ID, TableName) {
     try {
+      // First, attempt to get the item
+      const item = await this.get(ID, TableName);
+
+      // If the item doesn't exist, return a message
+      if (!item) {
+        throw new Error(`No item with ID ${ID} exists in table ${TableName}`);
+      }
+
+      // If the item does exist, delete it
       const params = {
         TableName,
         Key: {
@@ -132,18 +141,14 @@ const Dynamo = {
         },
       };
 
-      const data = await documentClient.delete(params).promise();
-
-      if (!data || !data.Items) {
-        throw Error('Data reference error');
-      }
-
+      await documentClient.delete(params).promise();
       return true;
     } catch (err) {
       console.error(`Error deleting data from ${TableName} for ID ${ID}`, err);
       throw err;
     }
   },
+
 };
 
 module.exports = Dynamo;

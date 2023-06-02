@@ -1,7 +1,22 @@
+/**
+ * @module CreateProductForm
+ */
 import React from 'react';
 import { TextField, Input, Switch, FormControlLabel, Typography, Box, Grid } from '@mui/material';
 import { AddButton } from '../../styled-components/ui/Buttons';
 
+
+/**
+ * `CreateProductForm` is a functional component that renders a form for creating a new product.
+ *
+ * @function CreateProductForm
+ * @param {object} props - The props object
+ * @param {function} props.handleSubmit - The function to be called when the form is submitted
+ * @param {string} props.error - Any error that occurred while submitting the form
+ * @param {object} props.formData - The form data object
+ * @param {function} props.setFormData - The function to update the form data
+ * @returns {JSX.Element} The rendered CreateProductForm component
+ */
 const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
   const { name, description, price, imageUrl, isUrlInput, formErrors } = formData;
 
@@ -29,7 +44,6 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {error && <Typography color="error">{error}</Typography>}
       <Box display="flex" flexDirection="column" gap={2}>
         <Grid container spacing={2}>
           <Grid item xs={8}>
@@ -47,7 +61,7 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
           <Grid item xs={4}>
             <TextField
               required
-              type="number"
+              type="text"
               label="Price"
               name="price"
               value={price}
@@ -71,7 +85,7 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
           fullWidth
         />
         <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={8}>
+          <Grid item xs={8}>
             {isUrlInput ? (
               <TextField
                 required
@@ -84,14 +98,21 @@ const CreateProductForm = ({ handleSubmit, error, formData, setFormData }) => {
                 fullWidth
               />
             ) : (
-              <Input
-              required
-              type="file"
-              inputProps={{
-                accept: 'image/*',
-                onChange: handleFileChange,
-              }}
-            />
+              <>
+                <Input
+                  required
+                  type="file"
+                  inputProps={{
+                    accept: 'image/jpeg, image/png',
+                    onChange: handleFileChange,
+                  }}
+                />
+                {formErrors.imageFile && (
+                  <Typography color="error" variant="body2">
+                    {formErrors.imageFile}
+                  </Typography>
+                )}
+              </>
             )}
           </Grid>
           <Grid item xs={4}>

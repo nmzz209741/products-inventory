@@ -28,7 +28,12 @@ exports.handler = async (event) => {
   const product = JSON.parse(event.body);
   // Validation of body
   if (
-    !(product.name && product.description && product.imageUrl && product.price)
+    !(
+      product.name.trim() &&
+      product.description.trim() &&
+      product.imageUrl.trim() &&
+      product.price.trim()
+    )
   ) {
     return Responses._400({
       message: `Incomplete request parameters for: ${Object.keys(product)
