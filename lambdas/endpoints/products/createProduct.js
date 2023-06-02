@@ -29,10 +29,10 @@ exports.handler = async (event) => {
   // Validation of body
   if (
     !(
-      product.name.trim() &&
-      product.description.trim() &&
-      product.imageUrl.trim() &&
-      product.price.trim()
+      product.name &&
+      product.description &&
+      product.imageUrl &&
+      product.price
     )
   ) {
     return Responses._400({

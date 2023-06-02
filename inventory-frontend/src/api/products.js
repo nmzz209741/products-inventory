@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 
-const BASE_URL = 'https://dkp298o56i.execute-api.ap-south-1.amazonaws.com/dev/';
+const BASE_URL = 'https://drlf70m353.execute-api.ap-south-1.amazonaws.com/dev/';
 
 /**
  * `productApi` is an instance of Axios configured with the base URL and default headers for the product API.

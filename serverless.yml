@@ -4,6 +4,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   stage: dev
+  profile: plerion-task-shreeti
   region: ap-south-1
   environment:
     tableName: ${self:custom.tableName}
@@ -36,8 +37,8 @@ package:
 
 custom:
   tableName: products
-  appBucketName: plerion-project-inventory-bucket
-  imageUploadBucket: plerion-project-inventory-image-bucket
+  appBucketName: plerion-project-inventory-bucket-shreeti
+  imageUploadBucket: plerion-project-inventory-image-bucket-shreeti
   s3Sync:
     - bucketName: ${self:custom.appBucketName}
       localDir: inventory-frontend/build/
